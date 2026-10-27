@@ -102,6 +102,19 @@ def test_rotate_polygon_about_pt_3d() -> None:
     assert np.allclose(rotated_pts, gt_rotated_pts)
 
 
+def test_rotate_polygon_about_pt_preserves_read_only_input() -> None:
+    pts = np.array([[2.0, 1.0, 0.0], [1.0, 2.0, 1.0]])
+    original_pts = pts.copy()
+    pts.setflags(write=False)
+    rotmat = np.array([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]])
+    center_pt = np.array([1.0, 1.0, 0.0])
+
+    rotated_pts = rotate_polygon_about_pt(pts, rotmat, center_pt)
+
+    assert np.array_equal(pts, original_pts)
+    assert np.allclose(rotated_pts, np.array([[1.0, 2.0, 0.0], [0.0, 1.0, 1.0]]))
+
+
 def test_filter_point_cloud_to_polygon_2d_triangle() -> None:
     """
         Test points that fall within a triangle symbol centered at
